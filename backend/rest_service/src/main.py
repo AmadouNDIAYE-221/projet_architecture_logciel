@@ -9,7 +9,7 @@ def get_db_connection():
     return mysql.connector.connect(
         database="projet_al",
         user="root",
-        password="votre_mot_de_passe",
+        password="wtxLUd69i",
         host="localhost"
     )
 
