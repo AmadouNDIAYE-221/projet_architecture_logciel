@@ -64,3 +64,33 @@ Instructions pour tester le frontend : cd frontend/public && python -m http.serv
   - `venv\Lib\site-packages\spyne\service.py` : `from collections.abc import Sequence`
   - `venv\Lib\site-packages\spyne\protocol\dictdoc\hier.py` : `from collections.abc import Iterable as AbcIterable`
 - Utilise `bcrypt` pour hacher/vérifier les mots de passe dans `backend/rest_service/src/main.py`.
+
+
+
+
+# Projet_AL_Groupe_1_MASTER1
+
+## Configuration
+1. Activez l'environnement virtuel : `.\venv\Scripts\activate`
+2. Installez les dépendances : `pip install -r requirements.txt`
+3. Configurez MySQL :
+   - Créez la base de données : `mysql -u root -p projet_al < backend/database/schema.sql`
+   - Ajoutez des données : `mysql -u root -p projet_al < backend/database/seed.sql`
+   - Configurez l'utilisateur root : `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'votre_nouveau_mot_de_passe';`
+
+## Exécution
+- Service REST : `cd backend/rest_service/src && python main.py`
+- Service SOAP : `cd backend/soap_service/src && python main.py`
+- Client SOAP : `cd client_app/src && python main.py`
+- Frontend : `cd frontend/public && python -m http.server 8000`
+
+## Fonctionnalités
+- **Visiteurs simples** : Consultation des articles et filtrage par catégorie sans authentification (`http://localhost:8000`).
+- **Éditeurs** : Authentification (`http://localhost:8000/login.html`) et gestion (lister, ajouter, modifier, supprimer) des articles et catégories.
+- **Administrateurs** : Gestion des utilisateurs (lister, ajouter, modifier, supprimer) via le service SOAP (`http://localhost:5001/soap`) avec un panneau d'administration élégant à onglets.
+- **Catégories** : Culture, Économie, Éducation, Environnement, Politique, Santé, Sciences, Sport, Technologie, Voyage.
+
+## Notes
+- Activez le support des chemins longs pour `zeep` (Regedit: `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem`, `LongPathsEnabled=1`).
+- MySQL doit utiliser `mysql_native_password` pour `root`.
+- Accédez à la page de connexion : `http://localhost:8000/login.html` (non requis pour les visiteurs simples).
