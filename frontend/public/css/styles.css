@@ -1,1 +1,15 @@
 /* Styles CSS pour le site */ 
+/* frontend/public/css/style.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+#articles div {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+button {
+    padding: 10px;
+    margin: 5px;
+}
