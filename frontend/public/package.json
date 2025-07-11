@@ -1,0 +1,10 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "build:css": "npx --no-install ./node_modules/tailwindcss/lib/cli.js -i ./css/input.css -o ./css/output.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}

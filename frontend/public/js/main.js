@@ -1,8 +1,12 @@
 let currentPage = 1;
 let token = localStorage.getItem('token');
 let role = localStorage.getItem('role');
+let categories = [];
+
+console.log('Initialisation de main.js', { token, role });
 
 function loadArticles(direction) {
+    console.log('Chargement des articles', { direction, currentPage });
     if (direction === 'next') currentPage++;
     if (direction === 'previous' && currentPage > 1) currentPage--;
     const category = document.getElementById('category').value;
@@ -11,238 +15,102 @@ function loadArticles(direction) {
     
     fetch(url)
         .then(response => {
-            if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
+            console.log('Réponse fetch /articles', response.status);
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(`Erreur HTTP ${response.status}: ${err.error || 'Unknown error'}`);
+                });
+            }
             return response.json();
         })
         .then(data => {
+            console.log('Articles chargés', data);
             const articlesDiv = document.getElementById('articles');
             articlesDiv.innerHTML = '';
             data.forEach(article => {
                 const articleElement = document.createElement('div');
-                articleElement.className = 'bg-white p-4 rounded-lg shadow';
+                articleElement.className = 'bg-white p-4 rounded-lg shadow cursor-pointer hover:shadow-xl transition duration-200';
                 articleElement.innerHTML = `<h2 class="text-lg font-semibold">${article.title}</h2><p class="text-gray-600">${article.summary}</p>`;
-                if (token && (role === 'editor' || role === 'admin')) {
-                    articleElement.innerHTML += `
-                        <div class="mt-2 flex space-x-2">
-                            <button onclick="updateArticle(${article.id}, '${article.title}', '${article.summary}', ${article.category_id})" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition duration-200">Modifier</button>
-                            <button onclick="deleteArticle(${article.id})" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-200">Supprimer</button>
-                        </div>
-                    `;
-                }
+                articleElement.addEventListener('click', () => openModal(article.id));
                 articlesDiv.appendChild(articleElement);
             });
         })
         .catch(error => {
-            console.error('Erreur:', error);
-            document.getElementById('articles').innerHTML = '<p class="text-red-500">Erreur lors du chargement des articles</p>';
+            console.error('Erreur lors du chargement des articles:', error);
+            document.getElementById('articles').innerHTML = `<p class="text-red-500">${error.message}</p>`;
         });
 }
 
 function loadCategories() {
+    console.log('Chargement des catégories');
     fetch('http://localhost:5000/categories')
         .then(response => {
-            if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
+            console.log('Réponse fetch /categories', response.status);
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(`Erreur HTTP ${response.status}: ${err.error || 'Unknown error'}`);
+                });
+            }
             return response.json();
         })
         .then(data => {
+            console.log('Catégories chargées', data);
+            categories = data;
             const categorySelect = document.getElementById('category');
-            const articleCategorySelect = document.getElementById('category_id');
             categorySelect.innerHTML = '<option value="">Toutes</option>';
             data.forEach(category => {
                 categorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
-                if (articleCategorySelect) {
-                    articleCategorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
-                }
             });
         })
-        .catch(error => console.error('Erreur:', error));
+        .catch(error => {
+            console.error('Erreur lors du chargement des catégories:', error);
+            document.getElementById('category').innerHTML = `<option value="">Erreur: ${error.message}</option>`;
+        });
 }
 
-function addArticle(title, summary, category_id) {
-    fetch('http://localhost:5000/articles', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ title, summary, category_id })
-    })
+function openModal(articleId) {
+    console.log('Ouverture modale pour article', articleId);
+    fetch(`http://localhost:5000/articles/${articleId}`)
         .then(response => {
-            if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
+            console.log('Réponse fetch /articles/' + articleId, response.status);
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(`Erreur HTTP ${response.status}: ${err.error || 'Unknown error'}`);
+                });
+            }
             return response.json();
         })
-        .then(data => loadArticles())
-        .catch(error => console.error('Erreur:', error));
-}
-
-function updateArticle(id, title, summary, category_id) {
-    const newTitle = prompt('Nouveau titre :', title);
-    const newSummary = prompt('Nouveau résumé :', summary);
-    const newCategory = prompt('Nouvelle catégorie ID :', category_id);
-    if (newTitle && newSummary && newCategory) {
-        fetch(`http://localhost:5000/articles/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ title: newTitle, summary: newSummary, category_id: newCategory })
+        .then(article => {
+            console.log('Article chargé', article);
+            const category = categories.find(cat => cat.id === article.category_id);
+            document.getElementById('modalTitle').textContent = article.title;
+            document.getElementById('modalSummary').textContent = article.summary;
+            document.getElementById('modalCategory').textContent = `Catégorie : ${category ? category.name : 'Inconnue'}`;
+            document.getElementById('articleModal').classList.remove('hidden');
         })
-            .then(response => {
-                if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-                return response.json();
-            })
-            .then(data => loadArticles())
-            .catch(error => console.error('Erreur:', error));
-    }
+        .catch(error => {
+            console.error('Erreur lors du chargement de l\'article:', error);
+            document.getElementById('articles').innerHTML = `<p class="text-red-500">${error.message}</p>`;
+        });
 }
 
-function deleteArticle(id) {
-    if (confirm('Supprimer cet article ?')) {
-        fetch(`http://localhost:5000/articles/${id}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
-            .then(response => {
-                if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-                return response.json();
-            })
-            .then(data => loadArticles())
-            .catch(error => console.error('Erreur:', error));
-    }
+function closeModal() {
+    console.log('Fermeture modale');
+    document.getElementById('articleModal').classList.add('hidden');
 }
-
-function loadUsers() {
-    if (role !== 'admin') return;
-    fetch('http://localhost:5000/users', {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-        .then(response => {
-            if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            const userList = document.getElementById('userList');
-            const editUserSelect = document.getElementById('editUsername');
-            userList.innerHTML = '<h3 class="text-lg font-semibold mb-2 text-gray-800">Liste des utilisateurs</h3>';
-            editUserSelect.innerHTML = '<option value="">Sélectionner un utilisateur</option>';
-            data.forEach(user => {
-                userList.innerHTML += `
-                    <div class="flex justify-between items-center p-2 border-b">
-                        <span>${user.username} (${user.role})</span>
-                        <div class="flex space-x-2">
-                            <button onclick="populateEditForm('${user.username}', '${user.role}')" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition duration-200">Modifier</button>
-                            <button onclick="deleteUser('${user.username}')" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-200">Supprimer</button>
-                        </div>
-                    </div>
-                `;
-                editUserSelect.innerHTML += `<option value="${user.username}">${user.username} (${user.role})</option>`;
-            });
-        })
-        .catch(error => console.error('Erreur:', error));
-}
-
-function populateEditForm(username, role) {
-    document.getElementById('editUsername').value = username;
-    document.getElementById('editRole').value = role;
-    document.getElementById('editPassword').value = '';
-    document.querySelectorAll('.tab-link').forEach(t => {
-        t.classList.remove('border-blue-600', 'text-blue-600');
-        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-    });
-    document.getElementById('tab-edit').classList.add('border-blue-600', 'text-blue-600');
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-    document.getElementById('edit-user').classList.remove('hidden');
-}
-
-function addUser(username, password, role) {
-    fetch('http://localhost:5000/users', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ username, password, role })
-    })
-        .then(response => {
-            if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-            return response.json();
-        })
-        .then(data => loadUsers())
-        .catch(error => console.error('Erreur:', error));
-}
-
-function updateUser(username, password, role) {
-    const body = { role };
-    if (password) body.password = password;
-    fetch(`http://localhost:5000/users/${username}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(body)
-    })
-        .then(response => {
-            if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-            return response.json();
-        })
-        .then(data => loadUsers())
-        .catch(error => console.error('Erreur:', error));
-}
-
-function deleteUser(username) {
-    if (confirm(`Supprimer l'utilisateur ${username} ?`)) {
-        fetch(`http://localhost:5000/users/${username}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
-            .then(response => {
-                if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
-                return response.json();
-            })
-            .then(data => loadUsers())
-            .catch(error => console.error('Erreur:', error));
-    }
-}
-
-document.getElementById('articleForm')?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const title = document.getElementById('title').value;
-    const summary = document.getElementById('summary').value;
-    const category_id = document.getElementById('category_id').value;
-    addArticle(title, summary, category_id);
-});
-
-document.getElementById('userForm')?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const username = document.getElementById('newUsername').value;
-    const password = document.getElementById('newPassword').value;
-    const role = document.getElementById('newRole').value;
-    addUser(username, password, role);
-});
-
-document.getElementById('editUserForm')?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const username = document.getElementById('editUsername').value;
-    const password = document.getElementById('editPassword').value;
-    const role = document.getElementById('editRole').value;
-    updateUser(username, password, role);
-});
 
 if (token) {
+    console.log('Utilisateur connecté', { role });
     document.getElementById('authStatus').innerHTML = `
         <p class="text-green-600">Connecté en tant que ${role} | <a href="login.html" onclick="localStorage.clear()" class="text-blue-500 hover:underline">Déconnexion</a></p>
     `;
-    if (role === 'editor' || role === 'admin') {
-        document.getElementById('editorPanel').classList.remove('hidden');
-    }
-    if (role === 'admin') {
-        document.getElementById('adminPanel').classList.remove('hidden');
-        loadUsers();
-    }
+} else {
+    console.log('Utilisateur non connecté');
+    document.getElementById('authStatus').innerHTML = `
+        <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">Se connecter</a>
+    `;
 }
 
+console.log('Lancement des fonctions initiales');
 loadCategories();
 loadArticles();
