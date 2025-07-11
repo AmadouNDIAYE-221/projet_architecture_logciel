@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
 from zeep import Client
+import bcrypt
 
 app = Flask(__name__)
 CORS(app)
@@ -69,19 +70,20 @@ def login():
     try:
         data = request.get_json()
         username = data.get('username')
-        password = data.get('password')
+        password = data.get('password').encode('utf-8')
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT username, role FROM users WHERE username = %s AND password = %s", (username, password))
+        cursor.execute("SELECT username, password, role FROM users WHERE username = %s", (username,))
         user = cursor.fetchone()
         cursor.close()
         conn.close()
-        if user:
+        if user and bcrypt.checkpw(password, user['password'].encode('utf-8')):
             return jsonify({"username": user['username'], "role": user['role'], "token": "fake-jwt-token"})
         return jsonify({"error": "Invalid credentials"}), 401
     except mysql.connector.Error as err:
         print(f"Erreur MySQL : {err}")
         return jsonify({"error": str(err)}), 500
+# Reste du code inchangé (routes /articles, /categories, etc.)
 
 @app.route('/articles', methods=['POST'])
 def add_article():
