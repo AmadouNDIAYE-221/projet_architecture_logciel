@@ -1,16 +1,66 @@
-<!-- frontend/public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Projet AL</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Articles</h1>
-    <div id="articles"></div>
-    <button onclick="loadArticles('previous')">Précédent</button>
-    <button onclick="loadArticles('next')">Suivant</button>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-blue-600">Articles</h1>
+        <div id="authStatus" class="mb-4"></div>
+        <div id="editorPanel" class="hidden mb-6 bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Gérer les articles</h2>
+            <form id="articleForm" class="space-y-4">
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
+                    <input type="text" id="title" name="title" required class="mt-1 p-2 w-full border rounded-md">
+                </div>
+                <div>
+                    <label for="summary" class="block text-sm font-medium text-gray-700">Résumé</label>
+                    <input type="text" id="summary" name="summary" required class="mt-1 p-2 w-full border rounded-md">
+                </div>
+                <div>
+                    <label for="category_id" class="block text-sm font-medium text-gray-700">Catégorie</label>
+                    <select id="category_id" name="category_id" required class="mt-1 p-2 w-full border rounded-md"></select>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-200">Ajouter</button>
+            </form>
+        </div>
+        <div id="adminPanel" class="hidden mb-6 bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Gérer les utilisateurs</h2>
+            <form id="userForm" class="space-y-4">
+                <div>
+                    <label for="newUsername" class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+                    <input type="text" id="newUsername" name="newUsername" required class="mt-1 p-2 w-full border rounded-md">
+                </div>
+                <div>
+                    <label for="newPassword" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                    <input type="password" id="newPassword" name="newPassword" required class="mt-1 p-2 w-full border rounded-md">
+                </div>
+                <div>
+                    <label for="newRole" class="block text-sm font-medium text-gray-700">Rôle</label>
+                    <select id="newRole" name="newRole" required class="mt-1 p-2 w-full border rounded-md">
+                        <option value="editor">Éditeur</option>
+                        <option value="admin">Administrateur</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-200">Ajouter utilisateur</button>
+            </form>
+            <div id="userList" class="mt-4"></div>
+        </div>
+        <div class="mb-4">
+            <label for="category" class="block text-sm font-medium text-gray-700">Catégorie</label>
+            <select id="category" onchange="loadArticles()" class="mt-1 p-2 w-full border rounded-md">
+                <option value="">Toutes</option>
+            </select>
+        </div>
+        <div id="articles" class="grid gap-4"></div>
+        <div class="mt-4 flex justify-between">
+            <button onclick="loadArticles('previous')" class="bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 transition duration-200">Précédent</button>
+            <button onclick="loadArticles('next')" class="bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 transition duration-200">Suivant</button>
+        </div>
+    </div>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,7 +1,9 @@
-flask==2.0.1
-zeep==4.1.0
-requests==2.28.1
-mysql-connector-python==9.1.0
-spyne==2.13.16
-six==1.17.0
-werkzeug==2.0.3
+flask==2.0.1 
+flask-cors==4.0.0 
+mysql-connector-python==8.0.33 
+zeep==4.1.0 
+spyne==2.11.0
+lxml==4.9.4 
+requests==2.32.3 
+six==1.16.0 
+werkzeug==2.0.3 

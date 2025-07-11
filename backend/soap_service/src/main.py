@@ -1,8 +1,9 @@
 # backend/soap_service/src/main.py
-from flask import Flask, Response, request, send_file
+from flask import Flask
+from spyne import Application, ServiceBase, Unicode, Integer, ComplexModel, rpc
+from spyne.protocol.soap import Soap11
+from spyne.server.wsgi import WsgiApplication
 import mysql.connector
-from xml.etree import ElementTree as ET
-import os
 
 app = Flask(__name__)
 
@@ -10,49 +11,70 @@ def get_db_connection():
     return mysql.connector.connect(
         database="projet_al",
         user="root",
-        password="wtxLUd69i",
-        host="localhost"
+        password="wtxLUd69i",  # Mettez le mot de passe défini
+        host="localhost",
+        auth_plugin="mysql_native_password"
     )
 
-@app.route('/soap', methods=['POST'])
-def soap_service():
-    try:
-        # Parser la requête SOAP
-        xml_request = ET.fromstring(request.data)
-        username = xml_request.find('.//username').text
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT username, role FROM users WHERE username = %s", (username,))
-        user = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        
-        # Créer une réponse SOAP
-        response_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://example.com/userservice">
-    <soap:Body>
-        <ns:GetUserResponse>
-            <ns:user>{f"Username: {user[0]}, Role: {user[1]}" if user else "User not found"}</ns:user>
-        </ns:GetUserResponse>
-    </soap:Body>
-</soap:Envelope>"""
-        return Response(response_xml, mimetype='text/xml')
-    except Exception as e:
-        response_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-    <soap:Body>
-        <soap:Fault>
-            <faultcode>soap:Server</faultcode>
-            <faultstring>{str(e)}</faultstring>
-        </soap:Fault>
-    </soap:Body>
-</soap:Envelope>"""
-        return Response(response_xml, mimetype='text/xml')
+class User(ComplexModel):
+    username = Unicode
+    role = Unicode
 
-@app.route('/soap', methods=['GET'])
-def get_wsdl():
-    wsdl_path = os.path.join('..', 'config', 'wsdl', 'user_service.wsdl')
-    return send_file(wsdl_path, mimetype='text/xml')
+class UserService(ServiceBase):
+    @rpc(Unicode, _returns=User)
+    def GetUser(ctx, username):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT username, role FROM users WHERE username = %s", (username,))
+            user = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            if user:
+                return User(username=user['username'], role=user['role'])
+            return User(username=username, role="not found")
+        except mysql.connector.Error as err:
+            raise Exception(str(err))
+
+    @rpc(Unicode, Unicode, Unicode, _returns=Unicode)
+    def AddUser(ctx, username, password, role):
+        try:
+            if role not in ['editor', 'admin']:
+                return "Invalid role"
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO users (username, password, role) VALUES (%s, %s, %s)",
+                (username, password, role)
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return "User added"
+        except mysql.connector.Error as err:
+            return str(err)
+
+    @rpc(Unicode, _returns=Unicode)
+    def DeleteUser(ctx, username):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM users WHERE username = %s", (username,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return "User deleted"
+        except mysql.connector.Error as err:
+            return str(err)
+
+application = Application(
+    [UserService],
+    tns='projet_al',
+    in_protocol=Soap11(validator='lxml'),
+    out_protocol=Soap11()
+)
+wsgi_app = WsgiApplication(application)
+app.wsgi_app = wsgi_app
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5001)
