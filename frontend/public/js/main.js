@@ -1,4 +1,3 @@
-// frontend/public/js/main.js
 let currentPage = 1;
 let token = localStorage.getItem('token');
 let role = localStorage.getItem('role');
@@ -24,7 +23,7 @@ function loadArticles(direction) {
                 articleElement.innerHTML = `<h2 class="text-lg font-semibold">${article.title}</h2><p class="text-gray-600">${article.summary}</p>`;
                 if (token && (role === 'editor' || role === 'admin')) {
                     articleElement.innerHTML += `
-                        <div class="mt-2">
+                        <div class="mt-2 flex space-x-2">
                             <button onclick="updateArticle(${article.id}, '${article.title}', '${article.summary}', ${article.category_id})" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition duration-200">Modifier</button>
                             <button onclick="deleteArticle(${article.id})" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-200">Supprimer</button>
                         </div>
@@ -51,7 +50,9 @@ function loadCategories() {
             categorySelect.innerHTML = '<option value="">Toutes</option>';
             data.forEach(category => {
                 categorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
-                articleCategorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
+                if (articleCategorySelect) {
+                    articleCategorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
+                }
             });
         })
         .catch(error => console.error('Erreur:', error));
@@ -123,17 +124,36 @@ function loadUsers() {
         })
         .then(data => {
             const userList = document.getElementById('userList');
-            userList.innerHTML = '<h3 class="text-lg font-semibold mb-2">Liste des utilisateurs</h3>';
+            const editUserSelect = document.getElementById('editUsername');
+            userList.innerHTML = '<h3 class="text-lg font-semibold mb-2 text-gray-800">Liste des utilisateurs</h3>';
+            editUserSelect.innerHTML = '<option value="">Sélectionner un utilisateur</option>';
             data.forEach(user => {
                 userList.innerHTML += `
                     <div class="flex justify-between items-center p-2 border-b">
                         <span>${user.username} (${user.role})</span>
-                        <button onclick="deleteUser('${user.username}')" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-200">Supprimer</button>
+                        <div class="flex space-x-2">
+                            <button onclick="populateEditForm('${user.username}', '${user.role}')" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition duration-200">Modifier</button>
+                            <button onclick="deleteUser('${user.username}')" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-200">Supprimer</button>
+                        </div>
                     </div>
                 `;
+                editUserSelect.innerHTML += `<option value="${user.username}">${user.username} (${user.role})</option>`;
             });
         })
         .catch(error => console.error('Erreur:', error));
+}
+
+function populateEditForm(username, role) {
+    document.getElementById('editUsername').value = username;
+    document.getElementById('editRole').value = role;
+    document.getElementById('editPassword').value = '';
+    document.querySelectorAll('.tab-link').forEach(t => {
+        t.classList.remove('border-blue-600', 'text-blue-600');
+        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+    });
+    document.getElementById('tab-edit').classList.add('border-blue-600', 'text-blue-600');
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+    document.getElementById('edit-user').classList.remove('hidden');
 }
 
 function addUser(username, password, role) {
@@ -144,6 +164,25 @@ function addUser(username, password, role) {
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ username, password, role })
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
+            return response.json();
+        })
+        .then(data => loadUsers())
+        .catch(error => console.error('Erreur:', error));
+}
+
+function updateUser(username, password, role) {
+    const body = { role };
+    if (password) body.password = password;
+    fetch(`http://localhost:5000/users/${username}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
     })
         .then(response => {
             if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
@@ -168,7 +207,7 @@ function deleteUser(username) {
     }
 }
 
-document.getElementById('articleForm').addEventListener('submit', (event) => {
+document.getElementById('articleForm')?.addEventListener('submit', (event) => {
     event.preventDefault();
     const title = document.getElementById('title').value;
     const summary = document.getElementById('summary').value;
@@ -176,12 +215,20 @@ document.getElementById('articleForm').addEventListener('submit', (event) => {
     addArticle(title, summary, category_id);
 });
 
-document.getElementById('userForm').addEventListener('submit', (event) => {
+document.getElementById('userForm')?.addEventListener('submit', (event) => {
     event.preventDefault();
     const username = document.getElementById('newUsername').value;
     const password = document.getElementById('newPassword').value;
     const role = document.getElementById('newRole').value;
     addUser(username, password, role);
+});
+
+document.getElementById('editUserForm')?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const username = document.getElementById('editUsername').value;
+    const password = document.getElementById('editPassword').value;
+    const role = document.getElementById('editRole').value;
+    updateUser(username, password, role);
 });
 
 if (token) {
@@ -195,8 +242,6 @@ if (token) {
         document.getElementById('adminPanel').classList.remove('hidden');
         loadUsers();
     }
-} else {
-    window.location.href = 'login.html';
 }
 
 loadCategories();

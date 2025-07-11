@@ -4,7 +4,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
 from zeep import Client
-import bcrypt
 
 app = Flask(__name__)
 CORS(app)
@@ -14,7 +13,7 @@ def get_db_connection():
         return mysql.connector.connect(
             database="projet_al",
             user="root",
-            password="wtxLUd69i", 
+            password="wtxLUd69i",
             host="localhost",
             auth_plugin="mysql_native_password"
         )
@@ -70,20 +69,19 @@ def login():
     try:
         data = request.get_json()
         username = data.get('username')
-        password = data.get('password').encode('utf-8')
+        password = data.get('password')
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT username, password, role FROM users WHERE username = %s", (username,))
+        cursor.execute("SELECT username, role FROM users WHERE username = %s AND password = %s", (username, password))
         user = cursor.fetchone()
         cursor.close()
         conn.close()
-        if user and bcrypt.checkpw(password, user['password'].encode('utf-8')):
+        if user:
             return jsonify({"username": user['username'], "role": user['role'], "token": "fake-jwt-token"})
         return jsonify({"error": "Invalid credentials"}), 401
     except mysql.connector.Error as err:
         print(f"Erreur MySQL : {err}")
         return jsonify({"error": str(err)}), 500
-# Reste du code inchangé (routes /articles, /categories, etc.)
 
 @app.route('/articles', methods=['POST'])
 def add_article():
@@ -198,6 +196,22 @@ def add_user():
         role = data.get('role')
         client = Client('http://localhost:5001/soap?wsdl')
         result = client.service.AddUser(username, password, role)
+        return jsonify({"message": result})
+    except Exception as err:
+        print(f"Erreur : {err}")
+        return jsonify({"error": str(err)}), 500
+
+@app.route('/users/<username>', methods=['PUT'])
+def update_user(username):
+    try:
+        token = request.headers.get('Authorization')
+        if not token or token != "Bearer fake-jwt-token":
+            return jsonify({"error": "Unauthorized"}), 401
+        data = request.get_json()
+        password = data.get('password')
+        role = data.get('role')
+        client = Client('http://localhost:5001/soap?wsdl')
+        result = client.service.UpdateUser(username, password, role)
         return jsonify({"message": result})
     except Exception as err:
         print(f"Erreur : {err}")

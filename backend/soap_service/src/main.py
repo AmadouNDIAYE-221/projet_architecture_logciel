@@ -11,7 +11,7 @@ def get_db_connection():
     return mysql.connector.connect(
         database="projet_al",
         user="root",
-        password="wtxLUd69i",  # Mettez le mot de passe défini
+        password="wtxLUd69i",  
         host="localhost",
         auth_plugin="mysql_native_password"
     )
@@ -54,12 +54,44 @@ class UserService(ServiceBase):
         except mysql.connector.Error as err:
             return str(err)
 
+    @rpc(Unicode, Unicode, Unicode, _returns=Unicode)
+    def UpdateUser(ctx, username, password, role):
+        try:
+            if role not in ['editor', 'admin']:
+                return "Invalid role"
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            if password:
+                cursor.execute(
+                    "UPDATE users SET password = %s, role = %s WHERE username = %s",
+                    (password, role, username)
+                )
+            else:
+                cursor.execute(
+                    "UPDATE users SET role = %s WHERE username = %s",
+                    (role, username)
+                )
+            if cursor.rowcount == 0:
+                cursor.close()
+                conn.close()
+                return "User not found"
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return "User updated"
+        except mysql.connector.Error as err:
+            return str(err)
+
     @rpc(Unicode, _returns=Unicode)
     def DeleteUser(ctx, username):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("DELETE FROM users WHERE username = %s", (username,))
+            if cursor.rowcount == 0:
+                cursor.close()
+                conn.close()
+                return "User not found"
             conn.commit()
             cursor.close()
             conn.close()
