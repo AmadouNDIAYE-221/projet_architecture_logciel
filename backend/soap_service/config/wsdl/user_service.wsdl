@@ -1,1 +1,37 @@
-<wsdl:definitions> 
+<!-- backend/soap_service/config/wsdl/user_service.wsdl -->
+<definitions name="UserService"
+    targetNamespace="http://example.com/userservice"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://example.com/userservice"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <message name="GetUserRequest">
+        <part name="username" type="xsd:string"/>
+    </message>
+    <message name="GetUserResponse">
+        <part name="user" type="xsd:string"/>
+    </message>
+    <portType name="UserServicePortType">
+        <operation name="GetUser">
+            <input message="tns:GetUserRequest"/>
+            <output message="tns:GetUserResponse"/>
+        </operation>
+    </portType>
+    <binding name="UserServiceBinding" type="tns:UserServicePortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetUser">
+            <soap:operation soapAction="GetUser"/>
+            <input>
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="UserService">
+        <port name="UserServicePort" binding="tns:UserServiceBinding">
+            <soap:address location="http://localhost:5001/soap"/>
+        </port>
+    </service>
+</definitions>
