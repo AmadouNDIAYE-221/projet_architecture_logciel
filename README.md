@@ -15,7 +15,7 @@
 Instructions pour démarrer le service REST : cd backend/rest_service/src && python main.py.
 Instructions pour démarrer le service SOAP : cd backend/soap_service/src && python main.py.
 Instructions pour tester le client SOAP : 
-    \venv\Scripts\activate
+    .\venv\Scripts\activate
     cd client_app/src && python main.py.
 Instructions pour tester le frontend : cd frontend/public && python -m http.server 8000.
 

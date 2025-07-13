@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des catégories</title>
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div id="nav-container"></div>
+    <div class="container mx-auto p-4 mt-20">
+        <h1 class="text-2xl font-bold mb-4">Gestion des catégories</h1>
+        <button id="addCategoryBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg mb-4">Ajouter une catégorie</button>
+        <div id="category-list" class="bg-white p-4 rounded-lg shadow">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-2 text-left">ID</th>
+                        <th class="p-2 text-left">Nom</th>
+                        <th class="p-2 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="categoryTable"></tbody>
+            </table>
+        </div>
+        <div id="categoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                <h2 id="modalTitle" class="text-xl font-bold mb-4">Ajouter une catégorie</h2>
+                <form id="categoryForm">
+                    <div class="mb-4">
+                        <label for="categoryName" class="block text-gray-700">Nom de la catégorie</label>
+                        <input type="text" id="categoryName" class="p-2 border rounded w-full" required>
+                    </div>
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" id="modalClose" class="bg-gray-600 text-white px-4 py-2 rounded-lg">Annuler</button>
+                        <button type="submit" id="modalSubmit" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/gestion_categories.js"></script>
+</body>
+</html>

@@ -1,26 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Connexion - Projet AL</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link href="css/output.css" rel="stylesheet">
+    <style>
+        /* Styles de secours pour garantir l'application des classes Tailwind */
+        .bg-gray-500 { background-color: #6b7280 !important; }
+        .text-white { color: #ffffff !important; }
+        .hover\:bg-gray-600:hover { background-color: #4b5563 !important; }
+        .p-2 { padding: 0.5rem !important; }
+        .rounded { border-radius: 0.25rem !important; }
+        .w-full { width: 100% !important; }
+        .mt-6 { margin-top: 1.5rem !important; }
+        .text-center { text-align: center !important; }
+        .retour-btn {
+            display: block !important;
+            cursor: pointer;
+            z-index: 10;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center text-blue-600">Connexion</h1>
-        <form id="loginForm" class="space-y-4">
-            <div>
+    <div id="nav-container" style="display: none;"></div> <!-- Masqué temporairement pour éviter interférences -->
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-center">Connexion</h2>
+        <form id="login-form">
+            <div class="mb-4">
                 <label for="username" class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
-                <input type="text" id="username" name="username" required class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" id="username" placeholder="Nom d'utilisateur" class="p-2 border rounded w-full" required>
             </div>
-            <div>
+            <div class="mb-4">
                 <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-                <input type="password" id="password" name="password" required class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="password" placeholder="Mot de passe" class="p-2 border rounded w-full" required>
             </div>
-            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-200">Se connecter</button>
+            <button type="submit" class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 w-full">Se connecter</button>
         </form>
-        <p id="authResult" class="mt-4 text-red-500 text-center"></p>
+        <div class="mt-6 text-center">
+            <a href="index.html" class="retour-btn bg-gray-500 text-white p-2 rounded hover:bg-gray-600 w-full">Retour</a>
+        </div>
     </div>
     <script src="js/login.js"></script>
+    <script src="js/navigation.js"></script>
 </body>
 </html>

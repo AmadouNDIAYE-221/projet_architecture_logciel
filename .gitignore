@@ -1,8 +1,18 @@
-echo venv/ > .gitignore
-echo __pycache__/ >> .gitignore
-echo *.pyc >> .gitignore
-echo *.pyo >> .gitignore
-echo *.pyd >> .gitignore
-echo .Python >> .gitignore
-echo *.log >> .gitignore
-echo *.sqlite >> .gitignore
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.log
+*.sqlite
+frontend/public/css/output.css
+frontend/public/node_modules/
+frontend/public/package-lock.json
+backend/rest_service/src/__pycache__/
+backend/soap_service/src/__pycache__/
+client_app/src/__pycache__/
+backup_projet_al.sql
+Capture d’écran 2025-07-12 062841.png
+.DS_Store
+structure_projet.txt

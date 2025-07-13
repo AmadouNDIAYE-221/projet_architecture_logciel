@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestion des articles</title>
+  <link href="css/output.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+    <div id="nav-container"></div>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4 mt-20">Gestion des articles</h1>
+
+        <button id="add-article-btn" class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 mb-4">
+            Ajouter un article
+        </button>
+
+        <div class="bg-white shadow-md rounded">
+            <table class="w-full table-auto">
+                <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-4 py-2">ID</th>
+                    <th class="px-4 py-2">Titre</th>
+                    <th class="px-4 py-2">Résumé</th>
+                    <th class="px-4 py-2">Catégorie</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="article-list"></tbody>
+            </table>
+        </div>
+
+        <!-- Modal pour formulaire -->
+        <div id="article-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center">
+            <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+                <h2 id="article-modal-title" class="text-xl font-bold mb-4">Ajouter un article</h2>
+                <form id="article-form">
+                    <input type="hidden" id="article-id" />
+
+                    <div class="mb-4">
+                        <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
+                        <input type="text" id="title" class="p-2 border rounded w-full" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="summary" class="block text-sm font-medium text-gray-700">Résumé</label>
+                        <textarea id="summary" rows="4" class="p-2 border rounded w-full" required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="category_id" class="block text-sm font-medium text-gray-700">Catégorie</label>
+                        <select id="category_id" class="p-2 border rounded w-full" required>
+                            <option value="">Sélectionner une catégorie</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="button" id="article-modal-close" class="bg-gray-500 text-white p-2 rounded mr-2">
+                            Annuler
+                        </button>
+                        <button type="submit" class="bg-blue-600 text-white p-2 rounded">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/gestion_articles.js"></script>
+</body>
+</html>
