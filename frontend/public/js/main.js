@@ -9,10 +9,11 @@ function loadArticles(direction) {
     console.log('Chargement des articles', { direction, currentPage });
     if (direction === 'next') currentPage++;
     if (direction === 'previous' && currentPage > 1) currentPage--;
-    const category = document.getElementById('category').value;
+    const categoryId = document.getElementById('category').value;
     let url = `http://localhost:5000/articles?page=${currentPage}`;
-    if (category) url += `&category=${category}`;
+    if (categoryId) url += `&category_id=${categoryId}`;
     
+    console.log('Requête envoyée :', url);
     fetch(url)
         .then(response => {
             console.log('Réponse fetch /articles', response.status);
@@ -27,6 +28,10 @@ function loadArticles(direction) {
             console.log('Articles chargés', data);
             const articlesDiv = document.getElementById('articles');
             articlesDiv.innerHTML = '';
+            if (data.length === 0) {
+                articlesDiv.innerHTML = '<p class="text-gray-600">Aucun article trouvé.</p>';
+                return;
+            }
             data.forEach(article => {
                 const articleElement = document.createElement('div');
                 articleElement.className = 'bg-white p-4 rounded-lg shadow cursor-pointer hover:shadow-xl transition duration-200';
@@ -104,6 +109,12 @@ if (token) {
     document.getElementById('authStatus').innerHTML = `
         <p class="text-green-600">Connecté en tant que ${role} | <a href="login.html" onclick="localStorage.clear()" class="text-blue-500 hover:underline">Déconnexion</a></p>
     `;
+    if (role === 'editeur') {
+        document.getElementById('editorPanel').classList.remove('hidden');
+    } else if (role === 'administrateur') {
+        document.getElementById('adminPanel').classList.remove('hidden');
+        document.getElementById('editorPanel').classList.remove('hidden');
+    }
 } else {
     console.log('Utilisateur non connecté');
     document.getElementById('authStatus').innerHTML = `
