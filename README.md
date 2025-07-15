@@ -3,7 +3,7 @@
 # Membres du groupes
 - **Papa Amadou Mandiaye NDIAYE**
 - **Aïssatou FOFANA**
-- **Boubacar NIANF**
+- **Boubacar NIANG**
 # Présentation
 Ce projet est une application web pour la gestion d'articles, avec des fonctionnalités pour les visiteurs, éditeurs, et administrateurs. Il utilise un backend REST et SOAP, une base de données MySQL, et un frontend basé sur HTML, JavaScript, et Tailwind CSS.
 
