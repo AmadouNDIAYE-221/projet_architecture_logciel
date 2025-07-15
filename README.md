@@ -71,31 +71,31 @@ Ce projet est une application web pour la gestion d'articles, avec des fonctionn
 ## Exécution
 1. Lancer le service REST
 
-    Naviguer dans le dossier du service REST :cd backend\rest_service\src
+        Naviguer dans le dossier du service REST :cd backend\rest_service\src
 
-    **Lancer le serveur Flask** :python main.py
+        Lancer le serveur Flask : python main.py
 
 
 2. Lancer le service SOAP
 
-    Naviguer dans le dossier du service SOAP : cd backend\soap_service\src
+        Naviguer dans le dossier du service SOAP : cd backend\soap_service\src
 
-    **Lancer le serveur SOAP** :python main.py
+        Lancer le serveur SOAP : python main.py
 
 
 3. Lancer le client SOAP
 
-    Naviguer dans le dossier du client :cd client_app\src
+        Naviguer dans le dossier du client : cd client_app\src
 
-    **Exécuter le client** : python main.py
+        Exécuter le client : python main.py
 
 
 
 4. Lancer le frontend
 
-    Naviguer dans le dossier frontend/public : cd frontend\public
+        Naviguer dans le dossier frontend/public : cd frontend\public
 
-    **Lancer le serveur HTTP :python -m http.server 8000**
+        Lancer le serveur HTTP : python -m http.server 8000
 
 
 On pourra ouvir dans un navigateur :
