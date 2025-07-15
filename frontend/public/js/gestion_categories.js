@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                           <td class="p-2">${category.id}</td>
                           <td class="p-2">${category.name}</td>
                           <td class="p-2">
-                              <button class="bg-gray-500 text-white px-2 py-1 rounded edit-btn" data-id="${category.id}">Modifier</button>
+                              <button class="bg-gray-600 text-white px-2 py-1 rounded edit-btn" data-id="${category.id}">Modifier</button>
                               <button class="bg-red-600 text-white px-2 py-1 rounded delete-btn" data-id="${category.id}">Supprimer</button>
                           </td>
                       `;
@@ -107,28 +107,34 @@ document.addEventListener('DOMContentLoaded', () => {
               });
       }
 
-      function deleteCategory(id) {
-          if (!confirm('Voulez-vous vraiment supprimer cette catégorie ?')) return;
-          console.log('Suppression catégorie', id);
-          fetch(`http://192.168.1.13:5000/categories/${id}`, {
-              method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${token}` }
-          })
-              .then(response => {
-                  console.log('Réponse fetch DELETE /categories/' + id, response.status);
-                  if (!response.ok) {
-                      return response.text().then(text => {
-                          throw new Error(`Erreur HTTP ${response.status}: ${text}`);
-                      });
-                  }
-                  console.log('Catégorie supprimée');
-                  loadCategories();
-              })
-              .catch(error => {
-                  console.error('Erreur suppression catégorie:', error);
-                  categoryList.innerHTML = `<tr><td colspan="3" class="p-2 text-red-500">${error.message}</td></tr>`;
-              });
-      }
+async function deleteCategory(id) {
+    if (!confirm('Voulez-vous vraiment supprimer cette catégorie ?')) return;
+    console.log('Suppression catégorie', id);
+    try {
+        const response = await fetch(`http://192.168.1.13:5000/categories/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        console.log('Réponse fetch DELETE /categories/' + id, response.status);
+        if (!response.ok) {
+            const text = await response.text();
+            if (response.status === 401) {
+                alert('Session expirée. Veuillez vous reconnecter.');
+                window.location.href = '/login.html';
+                return;
+            }
+            if (response.status === 400 && text.includes('articles sont liés')) {
+                throw new Error('Impossible de supprimer la catégorie : des articles y sont associés. Supprimez les articles liés dans la gestion des articles.');
+            }
+            throw new Error(`Erreur HTTP ${response.status}: ${text}`);
+        }
+        console.log('Catégorie supprimée');
+        loadCategories();
+    } catch (error) {
+        console.error('Erreur suppression catégorie:', error);
+        alert(`Erreur: ${error.message}`);
+    }
+}
 
       categoryForm.addEventListener('submit', (e) => {
           e.preventDefault();

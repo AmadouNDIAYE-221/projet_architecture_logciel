@@ -46,48 +46,54 @@ document.addEventListener('DOMContentLoaded', () => {
          }
 
          // Charger les articles
-         async function loadArticles() {
-             console.log('Chargement des articles');
-             const articleList = document.getElementById('article-list');
-             if (!articleList) {
-                 console.error('Élément article-list non trouvé dans le DOM');
-                 return;
-             }
-             try {
-                 const response = await fetch('http://192.168.1.13:5000/articles?page=1', {
-                     headers: { 'Authorization': `Bearer ${token}` }
-                 });
-                 if (!response.ok) {
-                     const errData = await response.json();
-                     throw new Error(`Erreur HTTP ${response.status}: ${errData.error || 'Erreur inconnue'}`);
-                 }
-                 const articles = await response.json();
-                 console.log('Articles chargés', articles);
-                 articleList.innerHTML = '';
-                 if (articles.length === 0) {
-                     articleList.innerHTML = '<tr><td colspan="5" class="text-center p-4">Aucun article trouvé</td></tr>';
-                     return;
-                 }
-                 articles.forEach(article => {
-                     const category = categories.find(cat => cat.id === article.category_id);
-                     const tr = document.createElement('tr');
-                     tr.innerHTML = `
-                         <td class="px-4 py-2">${article.id}</td>
-                         <td class="px-4 py-2">${article.title}</td>
-                         <td class="px-4 py-2">${article.summary}</td>
-                         <td class="px-4 py-2">${category ? category.name : 'Inconnue'}</td>
-                         <td class="px-4 py-2">
-                             <button onclick="editArticle(${article.id})" class="bg-gray-500 text-white p-1 rounded mr-2">Modifier</button>
-                             <button onclick="deleteArticle(${article.id})" class="bg-red-600 text-white p-1 rounded">Supprimer</button>
-                         </td>
-                     `;
-                     articleList.appendChild(tr);
-                 });
-             } catch (error) {
-                 console.error('Erreur lors du chargement des articles:', error);
-                 articleList.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-red-500">${error.message}</td></tr>`;
-             }
-         }
+async function loadArticles() {
+    console.log('Chargement de tous les articles');
+    const articleList = document.getElementById('article-list');
+    if (!articleList) {
+        console.error('Élément article-list non trouvé dans le DOM');
+        return;
+    }
+    try {
+        // Modifier l'URL pour récupérer tous les articles (sans paramètre page ou avec per_page élevé)
+        const response = await fetch('http://192.168.1.13:5000/articles?per_page=1000', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(`Erreur HTTP ${response.status}: ${errData.error || 'Erreur inconnue'}`);
+        }
+        const articles = await response.json();
+        console.log('Articles chargés', articles);
+        articleList.innerHTML = '';
+        if (articles.length === 0) {
+            articleList.innerHTML = '<tr><td colspan="5" class="text-center p-4">Aucun article trouvé</td></tr>';
+            return;
+        }
+        articles.forEach(article => {
+            const category = categories.find(cat => cat.id === article.category_id);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="px-4 py-2" style="max-width: 100px; height: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${article.id}</td>
+                <td class="px-4 py-2" style="max-width: 200px; height: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${article.title}</td>
+                <td class="px-4 py-2" style="max-width: 300px; height: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${article.summary}</td>
+                <td class="px-4 py-2" style="max-width: 150px; height: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${category ? category.name : 'Inconnue'}</td>
+                <td class="px-4 py-2" style="max-width: 200px; height: 50px;">
+                    <button onclick="editArticle(${article.id})" class="bg-gray-500 text-white p-0.5 rounded mr-2 h-6">Modifier</button>
+                    <button onclick="deleteArticle(${article.id})" class="bg-red-600 text-white p-0.5 rounded h-6">Supprimer</button>
+                </td>
+            `;
+            articleList.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Erreur lors du chargement des articles:', error);
+        articleList.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-red-500">${error.message}</td></tr>`;
+    }
+}
+
+
+
+
+         
 
          // Ouvrir la modale pour ajouter/modifier
          function openModal(mode, article = null) {

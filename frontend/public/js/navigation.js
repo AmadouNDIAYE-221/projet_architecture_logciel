@@ -1,83 +1,77 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Initialisation de navigation.js');
-    const navContainer = document.getElementById('nav-container');
-    if (!navContainer) {
-        console.error('nav-container non trouvé dans le DOM');
-        return;
-    }
-    const role = localStorage.getItem('role') || 'visiteur';
-    console.log('Rôle détecté:', role);
+        console.log('Initialisation de navigation.js');
+        const navContainer = document.getElementById('nav-container');
+        const role = localStorage.getItem('role') || 'visiteur';
 
-    const navItems = [
-        { role: 'administrateur', text: 'Tableau de bord', href: 'dashboard.html' },
-        { role: 'administrateur', text: 'Gestion des utilisateurs', href: 'gestion_utilisateurs.html' },
-        { role: 'administrateur', text: 'Gestion des Jetons', href: 'gestion_jetons.html' },
-        { role: 'administrateur', text: 'Gestion des articles', href: 'gestion_articles.html' },
-        { role: 'administrateur', text: 'Gestion des catégories', href: 'gestion_categories.html' },
-        { role: 'administrateur', text: 'Accueil', href: 'index.html' },
-        { role: 'administrateur', text: 'Déconnexion', href: '#', class: 'text-red-600', isLogout: true, action: () => {
-            console.log('Déconnexion : suppression de token et role');
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            console.log('localStorage après déconnexion:', localStorage.getItem('token'), localStorage.getItem('role'));
-            console.log('Redirection vers login.html');
-            window.location.href = '/login.html';
-        }},
-        { role: 'editeur', text: 'Gestion des articles', href: 'gestion_articles.html' },
-        { role: 'editeur', text: 'Gestion des catégories', href: 'gestion_categories.html' },
-        { role: 'editeur', text: 'Accueil', href: 'index.html' },
-        { role: 'editeur', text: 'Déconnexion', href: '#', class: 'text-red-600', isLogout: true, action: () => {
-            console.log('Déconnexion : suppression de token et role');
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            console.log('localStorage après déconnexion:', localStorage.getItem('token'), localStorage.getItem('role'));
-            console.log('Redirection vers login.html');
-            window.location.href = '/login.html';
-        }},
-        { role: 'visiteur', text: 'Accueil', href: 'index.html' },
-        { role: 'visiteur', text: 'Se connecter', href: 'login.html' }
-    ];
+        const navItems = [
+            { role: 'administrateur', text: 'Tableau de bord', href: 'dashboard.html' },
+            { role: 'administrateur', text: 'Gestion des utilisateurs', href: 'gestion_utilisateurs.html' },
+            { role: 'administrateur', text: 'Gestion des Jetons', href: 'gestion_jetons.html' },
+            { role: 'administrateur', text: 'Gestion des articles', href: 'gestion_articles.html' },
+            { role: 'administrateur', text: 'Gestion des catégories', href: 'gestion_categories.html' },
 
-    const nav = document.createElement('nav');
-    nav.className = 'fixed top-0 left-0 w-full z-50 bg-white text-black shadow-md';
+            { role: 'administrateur', text: 'Accueil', href: 'index.html' },
+            { role: 'administrateur', text: 'Déconnexion', href: '#', class: 'text-red-600', isLogout: true, action: () => {
+                console.log('Déconnexion : suppression de token et role');
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                console.log('Redirection vers login.html');
+                window.location.replace('login.html');
+            }},
+            { role: 'editeur', text: 'Gestion des articles', href: 'gestion_articles.html' },
+            { role: 'editeur', text: 'Gestion des categories', href: 'gestion_categories.html' },
 
-    const container = document.createElement('div');
-    container.className = 'max-w-7xl mx-auto px-4 py-3 flex justify-between items-center';
+            { role: 'editeur', text: 'Retour à la page principale', href: 'index.html' },
+            { role: 'editeur', text: 'Déconnexion', href: '#', class: 'text-red-600', isLogout: true, action: () => {
+                console.log('Déconnexion : suppression de token et role');
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                console.log('Redirection vers login.html');
+                window.location.replace('login.html');
+            }},
+            { role: 'visiteur', text: 'Accueil', href: 'index.html' },
+            { role: 'visiteur', text: 'Se connecter', href: 'login.html' }
+        ];
 
-    const ul = document.createElement('ul');
-    ul.className = 'flex space-x-6';
+        const nav = document.createElement('nav');
+        nav.className = 'fixed top-0 left-0 w-full z-50 bg-white text-black shadow-md';
 
-    const rightDiv = document.createElement('div');
-    rightDiv.className = 'flex items-center';
+        const container = document.createElement('div');
+        container.className = 'max-w-7xl mx-auto px-4 py-3 flex justify-between items-center';
 
-    navItems.forEach(item => {
-        if (!item.role || item.role === role) {
-            const a = document.createElement('a');
-            a.textContent = item.text;
-            a.href = item.href || '#';
-            a.className = `px-4 py-2 hover:underline ${item.class || 'text-blue-600'} font-medium`;
+        const ul = document.createElement('ul');
+        ul.className = 'flex space-x-6';
 
-            if (item.action) {
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Clic sur:', item.text);
-                    item.action();
-                });
+        const rightDiv = document.createElement('div');
+        rightDiv.className = 'flex items-center';
+
+        navItems.forEach(item => {
+            if (!item.role || item.role === role) {
+                const a = document.createElement('a');
+                a.textContent = item.text;
+                a.href = item.href || '#';
+                a.className = `px-4 py-2 hover:underline ${item.class || 'text-blue-600'} font-medium`;
+
+                if (item.action) {
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        item.action();
+                    });
+                }
+
+                if (item.isLogout) {
+                    rightDiv.appendChild(a);
+                } else {
+                    const li = document.createElement('li');
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
             }
+        });
 
-            if (item.isLogout) {
-                rightDiv.appendChild(a);
-            } else {
-                const li = document.createElement('li');
-                li.appendChild(a);
-                ul.appendChild(li);
-            }
-        }
+        container.appendChild(ul);
+        container.appendChild(rightDiv);
+        nav.appendChild(container);
+        navContainer.innerHTML = '';
+        navContainer.appendChild(nav);
     });
-
-    container.appendChild(ul);
-    container.appendChild(rightDiv);
-    nav.appendChild(container);
-    navContainer.innerHTML = '';
-    navContainer.appendChild(nav);
-});

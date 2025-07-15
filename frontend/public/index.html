@@ -1,142 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Projet AL</title>
-    <link href="css/output.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Projet AL - Groupe1 - M1GLSI</title>
+  <link href="css/output.css" rel="stylesheet" />
 </head>
-<body class="bg-gray-50 p-6 font-sans">
-    <div class="max-w-5xl mx-auto">
-        <!-- En-tête avec bouton Se connecter -->
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold text-blue-700">Articles - Récents - Projet architecture logiciel</h1>
-            <div id="authStatus" class="text-lg"></div>
-        </div>
-
-        <!-- Panneau des éditeurs -->
-        <div id="editorPanel" class="hidden mb-8 bg-white p-6 rounded-xl shadow-lg">
-            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Gérer les articles</h2>
-            <form id="articleForm" class="space-y-4">
-                <div>
-                    <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
-                    <input type="text" id="title" name="title" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div>
-                    <label for="summary" class="block text-sm font-medium text-gray-700">Résumé</label>
-                    <input type="text" id="summary" name="summary" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div>
-                    <label for="category_id" class="block text-sm font-medium text-gray-700">Catégorie</label>
-                    <select id="category_id" name="category_id" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
-                </div>
-                <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-200">Ajouter l'article</button>
-            </form>
-        </div>
-
-        <!-- Panneau des administrateurs -->
-        <div id="adminPanel" class="hidden mb-8 bg-white p-6 rounded-xl shadow-lg">
-            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Administration des utilisateurs</h2>
-            <!-- Onglets pour lister, ajouter, modifier -->
-            <div class="border-b border-gray-200 mb-4">
-                <nav class="-mb-px flex space-x-8">
-                    <button id="tab-list" class="tab-link border-b-2 border-blue-600 text-blue-600 px-1 py-2 font-medium text-sm">Lister</button>
-                    <button id="tab-add" class="tab-link border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 font-medium text-sm">Ajouter</button>
-                    <button id="tab-edit" class="tab-link border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 font-medium text-sm">Modifier</button>
-                </nav>
-            </div>
-
-            <!-- Section Lister -->
-            <div id="list-users" class="tab-content">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Liste des utilisateurs</h3>
-                <div id="userList" class="space-y-2"></div>
-            </div>
-
-            <!-- Section Ajouter -->
-            <div id="add-user" class="tab-content hidden">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Ajouter un utilisateur</h3>
-                <form id="userForm" class="space-y-4">
-                    <div>
-                        <label for="newUsername" class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
-                        <input type="text" id="newUsername" name="newUsername" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label for="newPassword" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-                        <input type="password" id="newPassword" name="newPassword" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label for="newRole" class="block text-sm font-medium text-gray-700">Rôle</label>
-                        <select id="newRole" name="newRole" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="editor">Éditeur</option>
-                            <option value="admin">Administrateur</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-200">Ajouter l'utilisateur</button>
-                </form>
-            </div>
-
-            <!-- Section Modifier -->
-            <div id="edit-user" class="tab-content hidden">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Modifier un utilisateur</h3>
-                <form id="editUserForm" class="space-y-4">
-                    <div>
-                        <label for="editUsername" class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
-                        <select id="editUsername" name="editUsername" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
-                    </div>
-                    <div>
-                        <label for="editPassword" class="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
-                        <input type="password" id="editPassword" name="editPassword" placeholder="Laisser vide pour ne pas modifier" class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label for="editRole" class="block text-sm font-medium text-gray-700">Nouveau rôle</label>
-                        <select id="editRole" name="editRole" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="editor">Éditeur</option>
-                            <option value="admin">Administrateur</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-200">Modifier l'utilisateur</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Filtrage et liste des articles -->
-        <div class="mb-6">
-            <label for="category" class="block text-sm font-medium text-gray-700">Catégorie</label>
-            <select id="category" onchange="loadArticles()" class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Toutes</option>
-            </select>
-        </div>
-        <div id="articles" class="grid gap-4"></div>
-        <div class="mt-6 flex justify-between">
-            <button onclick="loadArticles('previous')" class="bg-gray-600 text-white p-3 rounded-lg hover:bg-gray-700 transition duration-200">Précédent</button>
-            <button onclick="loadArticles('next')" class="bg-gray-600 text-white p-3 rounded-lg hover:bg-gray-700 transition duration-200">Suivant</button>
-        </div>
-
-        <!-- Fenêtre modale pour les détails de l'article -->
-        <div id="articleModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-            <div class="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
-                <h2 id="modalTitle" class="text-2xl font-semibold mb-4 text-gray-800"></h2>
-                <p id="modalSummary" class="text-gray-600 mb-4"></p>
-                <p id="modalCategory" class="text-gray-600 mb-4"></p>
-                <button onclick="closeModal()" class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-200">Fermer</button>
-            </div>
-        </div>
+<body class="bg-gray-100 p-4 font-sans">
+  <div class="max-w-5xl mx-auto mt-5" >
+    <!-- En-tête -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-4xl font-bold text-blue-700">
+        Articles - Récents - Projet architecture logiciel
+      </h1>
+      <div id="authStatus" class="text-lg"></div>
     </div>
-    <script src="js/main.js"></script>
-    <script>
-        // Gestion des onglets
-        document.querySelectorAll('.tab-link').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab-link').forEach(t => {
-                    t.classList.remove('border-blue-600', 'text-blue-600');
-                    t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                });
-                tab.classList.add('border-blue-600', 'text-blue-600');
-                tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
 
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-                document.getElementById(tab.id.replace('tab-', ''))?.classList.remove('hidden');
-            });
-        });
-    </script>
+    <!-- Filtrage des catégories -->
+    <div class="mb-6">
+      <label for="category" class="block text-sm font-medium text-gray-700">Catégorie</label>
+      <select id="category" onchange="loadArticles()" class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">Toutes</option>
+      </select>
+    </div>
+
+    <!-- Liste des articles -->
+    <div id="articles" class="grid gap-4"></div>
+
+    <!-- Pagination avec IDs pour les boutons -->
+<!-- Pagination avec IDs pour les boutons -->
+<div class="flex items-center justify-center bg-blue-200 rounded-xl p-3 gap-4 max-w-sm mx-auto">
+    <button id="prevButton" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-600">Précédent</button>
+    
+    <div id="pageInfo" class="text-center text-gray-700 bg-gray-100 p-2 rounded-lg font-medium min-w-[100px]">
+        Page : 1 / 1
+    </div>
+
+    <button id="nextButton" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-600">Suivant</button>
+</div>
+
+
+    <!-- Indicateur de page -->
+  </div>
+
+  <!-- Modale -->
+<div id="articleModal" class="hidden" style="
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; overflow: auto;
+">
+  <div style="
+    background: white; width: 90%; max-width: 800px; margin: 50px auto; padding: 20px; border-radius: 10px;
+    max-height: 90vh; overflow-y: auto;
+  ">
+    <h2 id="modalTitle" style="margin-bottom: 16px; font-weight: 700; font-size: 1.5rem; font-family: ui-sans-serif, system-ui, sans-serif;"></h2>
+
+    <p id="modalSummary" style="white-space: pre-line; margin-bottom: 12px;"></p>
+    <p id="modalCategory" style="font-weight: 700; font-size: 1rem; color: #555;"></p>
+    <button onclick="closeModal()" style="
+      margin-top: 20px; padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer;">Fermer</button>
+  </div>
+</div>
+
+
+  <script src="js/main.js?v=3"></script>
 </body>
 </html>
