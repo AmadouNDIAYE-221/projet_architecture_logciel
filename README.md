@@ -71,76 +71,64 @@ Ce projet est une application web pour la gestion d'articles, avec des fonctionn
 ## Exécution
 1. Lancer le service REST
 
-        Naviguer dans le dossier du service REST :cd backend\rest_service\src
+    Naviguer dans le dossier du service REST :cd backend\rest_service\src
 
-
-**Lancer le serveur Flask** :python main.py
-
-        Le serveur s’exécute sur http://192.168.1.13:5000.
-        Vérifier les endpoints :curl -X GET http://192.168.1.13:5000/categories
-        curl -X GET http://192.168.1.13:5000/articles
+    **Lancer le serveur Flask** :python main.py
 
 
 2. Lancer le service SOAP
 
-        Naviguer dans le dossier du service SOAP :cd backend\soap_service\src
+    Naviguer dans le dossier du service SOAP : cd backend\soap_service\src
 
-
-**Lancer le serveur SOAP** :python main.py
-
-
-        Le serveur s’exécute sur http://localhost:5001/soap.
-        Vérifie le WSDL :curl http://localhost:5001/soap?wsdl
-
+    **Lancer le serveur SOAP** :python main.py
 
 
 3. Lancer le client SOAP
 
-        Naviguer dans le dossier du client :cd client_app\src
+    Naviguer dans le dossier du client :cd client_app\src
 
-
-**Exécuter le client** :python main.py
+    **Exécuter le client** : python main.py
 
 
 
 4. Lancer le frontend
 
-        Naviguer dans le dossier frontend/public :cd frontend\public
+    Naviguer dans le dossier frontend/public : cd frontend\public
 
-**Lancer le serveur HTTP :python -m http.server 8000**
+    **Lancer le serveur HTTP :python -m http.server 8000**
 
 
 On pourra ouvir dans un navigateur :
-        http://localhost:8000/index.html (interface pour visiteurs).
-        http://localhost:8000/login.html (connexion pour éditeurs/administrateurs).
-        http://localhost:8000/gestion_categories.html (gestion des catégories, pour administrateurs).
-        http://localhost:8000/gestion_articles.html (gestion des articles, pour éditeurs/administrateurs).
-        http://localhost:8000/gestion_utilisateurs.html (gestion des utilisateurs, pour administrateurs).
-        http://localhost:8000/dashboard.html (tableau de bord administrateur).
+- http://localhost:8000/index.html (interface pour visiteurs).
+- http://localhost:8000/login.html (connexion pour éditeurs/administrateurs).
+- http://localhost:8000/gestion_categories.html (gestion des catégories, pour administrateurs).
+- http://localhost:8000/gestion_articles.html (gestion des articles, pour éditeurs/administrateurs).
+- http://localhost:8000/gestion_utilisateurs.html (gestion des utilisateurs, pour administrateurs).
+- http://localhost:8000/dashboard.html (tableau de bord administrateur).
 
 
 
 ## Fonctionnalités
 
 **Visiteurs (non connectés)** :
-        Consultation des articles sur index.html.
-        Filtrage par catégorie via <select id="category">.
-        Détails des articles dans une modale (<div id="articleModal">).
-        Lien "Se connecter" dans <div id="authStatus">.
+- Consultation des articles sur index.html.
+- Filtrage par catégorie via <select id="category">.
+- Détails des articles dans une modale (<div id="articleModal">).
+- Lien "Se connecter" dans <div id="authStatus">.
 
 
 **Éditeurs (rôle : editeur)** :
-        Authentification via login.html.
-        Redirection vers gestion_articles.html après connexion.
-        Gestion des articles (ajouter, modifier, supprimer) avec un tableau (ID, Titre, Résumé, Catégorie, Actions).
-        Gestion des catégories via gestion_categories.html (ajouter, modifier, supprimer).
+- Authentification via login.html.
+- Redirection vers gestion_articles.html après connexion.
+- Gestion des articles (ajouter, modifier, supprimer) avec un tableau (ID, Titre, Résumé, Catégorie, Actions).
+- Gestion des catégories via gestion_categories.html (ajouter, modifier, supprimer).
 
 
 **Administrateurs (rôle : administrateur)** :
-        Redirection vers dashboard.html après connexion.
-        Gestion des articles via gestion_articles.html (comme les éditeurs).
-        Gestion des utilisateurs via gestion_utilisateurs.html (lister, ajouter, modifier, supprimer).
-        Gestion des catégories via gestion_categories.html.
+- Redirection vers dashboard.html après connexion.
+- Gestion des articles via gestion_articles.html (comme les éditeurs).
+- Gestion des utilisateurs via gestion_utilisateurs.html (lister, ajouter, modifier, supprimer).
+- Gestion des catégories via gestion_categories.html.
 
 
 ## Fin 
