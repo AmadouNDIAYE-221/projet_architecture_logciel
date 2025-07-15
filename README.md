@@ -37,10 +37,10 @@ Ce projet est une application web pour la gestion d'articles, avec des fonctionn
 
 3. Configurer MySQL
 
-        Accéder à MySQL :mysql -u root -p
+        Accéder à MySQL : mysql -u root -p
 
 
-        Créer la base de données projet_al :CREATE DATABASE projet_al;
+        Créer la base de données projet_al : CREATE DATABASE projet_al;
 
 
         Configurer l’utilisateur root (avec le mot de passe wtxLUd69i) :
@@ -55,16 +55,16 @@ Ce projet est une application web pour la gestion d'articles, avec des fonctionn
 
 4. Configurer le frontend (Tailwind CSS)
 
-        Naviguer dans le dossier frontend/public :cd frontend\public
+        Naviguer dans le dossier frontend/public : cd frontend\public
 
 
-        Initialiser un projet Node.js (si nécessaire) :npm init -y
+        Initialiser un projet Node.js (si nécessaire) : npm init -y
 
 
-        Installer Tailwind CSS :npm install -D tailwindcss@3.4.3
+        Installer Tailwind CSS : npm install -D tailwindcss@3.4.3
 
 
-        Générer css/output.css :npx tailwindcss -i ./css/input.css -o ./css/output.css --minify
+        Générer css/output.css : npx tailwindcss -i ./css/input.css -o ./css/output.css --minify
 
 
 
@@ -120,7 +120,7 @@ On pourra ouvir dans un navigateur :
 **Éditeurs (rôle : editeur)** :
 - Authentification via login.html.
 - Redirection vers gestion_articles.html après connexion.
-- Gestion des articles (ajouter, modifier, supprimer) avec un tableau (ID, Titre, Résumé, Catégorie, Actions).
+- Gestion des articles (ajouter, modifier, supprimer) avec un tableau (ID, Titre, Résumé, Catégorie,Actions).
 - Gestion des catégories via gestion_categories.html (ajouter, modifier, supprimer).
 
 
