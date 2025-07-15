@@ -112,9 +112,9 @@ On pourra ouvir dans un navigateur :
 
 **Visiteurs (non connectés)** :
 - Consultation des articles sur index.html.
-- Filtrage par catégorie via <select id="category">.
-- Détails des articles dans une modale (<div id="articleModal">).
-- Lien "Se connecter" dans <div id="authStatus">.
+- Filtrage par catégorie via
+- Détails des articles dans une modale 
+
 
 
 **Éditeurs (rôle : editeur)** :
