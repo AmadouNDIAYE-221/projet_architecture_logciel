@@ -22,80 +22,81 @@ Ce projet est une application web pour la gestion d'articles, avec des fonctionn
 
 ## Configuration
 1. Cloner le dépôt
-git clone https://github.com/<ton-utilisateur>/Projet_AL_Groupe_1_MASTER1.git
-cd Projet_AL_Groupe_1_MASTER1
+        git clone https://github.com/<ton-utilisateur>/Projet_AL_Groupe_1_MASTER1.git
+        cd Projet_AL_Groupe_1_MASTER1
 
 2. Configurer l’environnement virtuel Python
 
-Créer et activer un environnement virtuel :python -m venv venv
-.\venv\Scripts\activate
+        Créer et activer un environnement virtuel :
+            python -m venv venv
+            .\venv\Scripts\activate
 
 
-Installer les dépendances Python :pip install -r requirements.txt
+        Installer les dépendances Python :pip install -r requirements.txt
 
 
 3. Configurer MySQL
 
-Accéder à MySQL :mysql -u root -p
+        Accéder à MySQL :mysql -u root -p
 
 
-Créer la base de données projet_al :CREATE DATABASE projet_al;
+        Créer la base de données projet_al :CREATE DATABASE projet_al;
 
 
-Configurer l’utilisateur root (avec le mot de passe wtxLUd69i) :
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'wtxLUd68i';
-FLUSH PRIVILEGES;
+        Configurer l’utilisateur root (avec le mot de passe wtxLUd69i) :
+        ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'wtxLUd68i';
+        FLUSH PRIVILEGES;
 
 
-Importer le schéma et les données initiales :
-mysql -u root -p projet_al < backend/database/schema.sql
-mysql -u root -p projet_al < backend/database/seed.sql
+        Importer le schéma et les données initiales :
+        mysql -u root -p projet_al < backend/database/schema.sql
+        mysql -u root -p projet_al < backend/database/seed.sql
 
 
 4. Configurer le frontend (Tailwind CSS)
 
-Naviguer dans le dossier frontend/public :cd frontend\public
+        Naviguer dans le dossier frontend/public :cd frontend\public
 
 
-Initialiser un projet Node.js (si nécessaire) :npm init -y
+        Initialiser un projet Node.js (si nécessaire) :npm init -y
 
 
-Installer Tailwind CSS :npm install -D tailwindcss@3.4.3
+        Installer Tailwind CSS :npm install -D tailwindcss@3.4.3
 
 
-Générer css/output.css :npx tailwindcss -i ./css/input.css -o ./css/output.css --minify
+        Générer css/output.css :npx tailwindcss -i ./css/input.css -o ./css/output.css --minify
 
 
 
 ## Exécution
 1. Lancer le service REST
 
-Naviguer dans le dossier du service REST :cd backend\rest_service\src
+        Naviguer dans le dossier du service REST :cd backend\rest_service\src
 
 
 **Lancer le serveur Flask** :python main.py
 
-Le serveur s’exécute sur http://192.168.1.13:5000.
-Vérifier les endpoints :curl -X GET http://192.168.1.13:5000/categories
-curl -X GET http://192.168.1.13:5000/articles
+        Le serveur s’exécute sur http://192.168.1.13:5000.
+        Vérifier les endpoints :curl -X GET http://192.168.1.13:5000/categories
+        curl -X GET http://192.168.1.13:5000/articles
 
 
 2. Lancer le service SOAP
 
-Naviguer dans le dossier du service SOAP :cd backend\soap_service\src
+        Naviguer dans le dossier du service SOAP :cd backend\soap_service\src
 
 
 **Lancer le serveur SOAP** :python main.py
 
 
-Le serveur s’exécute sur http://localhost:5001/soap.
-Vérifie le WSDL :curl http://localhost:5001/soap?wsdl
+        Le serveur s’exécute sur http://localhost:5001/soap.
+        Vérifie le WSDL :curl http://localhost:5001/soap?wsdl
 
 
 
 3. Lancer le client SOAP
 
-Naviguer dans le dossier du client :cd client_app\src
+        Naviguer dans le dossier du client :cd client_app\src
 
 
 **Exécuter le client** :python main.py
@@ -104,42 +105,42 @@ Naviguer dans le dossier du client :cd client_app\src
 
 4. Lancer le frontend
 
-Naviguer dans le dossier frontend/public :cd frontend\public
+        Naviguer dans le dossier frontend/public :cd frontend\public
 
 **Lancer le serveur HTTP :python -m http.server 8000**
 
 
-Ouvre dans un navigateur :
-http://localhost:8000/index.html (interface pour visiteurs).
-http://localhost:8000/login.html (connexion pour éditeurs/administrateurs).
-http://localhost:8000/gestion_categories.html (gestion des catégories, pour administrateurs).
-http://localhost:8000/gestion_articles.html (gestion des articles, pour éditeurs/administrateurs).
-http://localhost:8000/gestion_utilisateurs.html (gestion des utilisateurs, pour administrateurs).
-http://localhost:8000/dashboard.html (tableau de bord administrateur).
+On pourra ouvir dans un navigateur :
+        http://localhost:8000/index.html (interface pour visiteurs).
+        http://localhost:8000/login.html (connexion pour éditeurs/administrateurs).
+        http://localhost:8000/gestion_categories.html (gestion des catégories, pour administrateurs).
+        http://localhost:8000/gestion_articles.html (gestion des articles, pour éditeurs/administrateurs).
+        http://localhost:8000/gestion_utilisateurs.html (gestion des utilisateurs, pour administrateurs).
+        http://localhost:8000/dashboard.html (tableau de bord administrateur).
 
 
 
 ## Fonctionnalités
 
 **Visiteurs (non connectés)** :
-Consultation des articles sur index.html.
-Filtrage par catégorie via <select id="category">.
-Détails des articles dans une modale (<div id="articleModal">).
-Lien "Se connecter" dans <div id="authStatus">.
+        Consultation des articles sur index.html.
+        Filtrage par catégorie via <select id="category">.
+        Détails des articles dans une modale (<div id="articleModal">).
+        Lien "Se connecter" dans <div id="authStatus">.
 
 
 **Éditeurs (rôle : editeur)** :
-Authentification via login.html.
-Redirection vers gestion_articles.html après connexion.
-Gestion des articles (ajouter, modifier, supprimer) avec un tableau (ID, Titre, Résumé, Catégorie, Actions).
-Gestion des catégories via gestion_categories.html (ajouter, modifier, supprimer).
+        Authentification via login.html.
+        Redirection vers gestion_articles.html après connexion.
+        Gestion des articles (ajouter, modifier, supprimer) avec un tableau (ID, Titre, Résumé, Catégorie, Actions).
+        Gestion des catégories via gestion_categories.html (ajouter, modifier, supprimer).
 
 
 **Administrateurs (rôle : administrateur)** :
-Redirection vers dashboard.html après connexion.
-Gestion des articles via gestion_articles.html (comme les éditeurs).
-Gestion des utilisateurs via gestion_utilisateurs.html (lister, ajouter, modifier, supprimer).
-Gestion des catégories via gestion_categories.html.
+        Redirection vers dashboard.html après connexion.
+        Gestion des articles via gestion_articles.html (comme les éditeurs).
+        Gestion des utilisateurs via gestion_utilisateurs.html (lister, ajouter, modifier, supprimer).
+        Gestion des catégories via gestion_categories.html.
 
 
 ## Fin 
