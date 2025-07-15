@@ -1,9 +1,9 @@
 # Projet d'Architecture Logicielle
 # Groupe 1 - Classe MASTER1
 # Membres du groupes
-**Papa Amadou Mandiaye NDIAYE**
-**Aïssatou FOFANA**
-**Boubacar NIANF**
+- **Papa Amadou Mandiaye NDIAYE**
+- **Aïssatou FOFANA**
+- **Boubacar NIANF**
 # Présentation
 Ce projet est une application web pour la gestion d'articles, avec des fonctionnalités pour les visiteurs, éditeurs, et administrateurs. Il utilise un backend REST et SOAP, une base de données MySQL, et un frontend basé sur HTML, JavaScript, et Tailwind CSS.
 
