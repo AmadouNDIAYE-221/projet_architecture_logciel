@@ -1,1 +1,0 @@
-# Configuration du service REST 
